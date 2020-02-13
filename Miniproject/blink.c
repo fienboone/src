@@ -28,21 +28,14 @@
 int16_t main(void) {
     init_elecanisms();
 
-    T1CON = 0x0030;         // set Timer1 period to 0.5s
-    PR1 = 0x7A11;
-
-    TMR1 = 0;               // set Timer1 count to 0
-    IFS0bits.T1IF = 0;      // lower Timer1 interrupt flag
-    T1CONbits.TON = 1;      // turn on Timer1
-
-    LED2 = ON;
-
-    while (1) {
-        if (IFS0bits.T1IF == 1) {
-            IFS0bits.T1IF = 0;      // lower Timer1 interrupt flag
-            LED2 = !LED2;           // toggle LED2
-        }
-        LED1 = (SW2 == 0) ? ON : OFF;   // turn LED1 on if SW2 is pressed
-        LED3 = (SW3 == 0) ? ON : OFF;   // turn LED3 on if SW3 is pressed
+    while(1){
+      if(D0 == 1){
+        LED1 = ON;
+        LED2 = OFF;
+      }
+      else{
+        LED1 = OFF;
+        LED2 = ON;
+      }
     }
 }

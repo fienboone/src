@@ -3,24 +3,24 @@
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are met: 
-** 
-**     1. Redistributions of source code must retain the above copyright 
-**        notice, this list of conditions and the following disclaimer. 
-**     2. Redistributions in binary form must reproduce the above copyright 
-**        notice, this list of conditions and the following disclaimer in the 
-**        documentation and/or other materials provided with the distribution. 
+** modification, are permitted provided that the following conditions are met:
 **
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-** ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
-** LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-** SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-** INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-** CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-** ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+**     1. Redistributions of source code must retain the above copyright
+**        notice, this list of conditions and the following disclaimer.
+**     2. Redistributions in binary form must reproduce the above copyright
+**        notice, this list of conditions and the following disclaimer in the
+**        documentation and/or other materials provided with the distribution.
+**
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+** AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+** IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+** ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+** LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+** SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+** INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+** CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+** ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 ** POSSIBILITY OF SUCH DAMAGE.
 */
 
@@ -48,6 +48,9 @@
 #define READ_SW2            4
 #define READ_SW3            5
 #define ENC_READ_REG        6
+#define TOGGLE_D5_PWM       7
+#define TOGGLE_D6_DIR       8
+#define TOGGLE_D7_EN        9
 
 uint16_t even_parity(uint16_t v) {
     v ^= v >> 8;
@@ -140,6 +143,21 @@ void vendor_requests(void) {
             BD[EP0IN].bytecount = 2;
             BD[EP0IN].status = UOWN | DTS | DTSEN;
             break;
+         case TOGGLE_D5_PWM:
+            D5 = !D5;
+            BD[EP0IN].bytecount = 0;
+            BD[EP0IN].status = UOWN | DTS | DTSEN;
+            break;
+        case TOGGLE_D6_DIR:
+            D6 = !D6;
+            BD[EP0IN].bytecount = 0;
+            BD[EP0IN].status = UOWN | DTS | DTSEN;
+            break;
+        case TOGGLE_D7_EN:
+            D7 = !D7;
+            BD[EP0IN].bytecount = 0;
+            BD[EP0IN].status = UOWN | DTS | DTSEN;
+            break;
         default:
             USB_error_flags |= REQUEST_ERROR;
     }
@@ -168,6 +186,12 @@ int16_t main(void) {
     SPI2CON1 = 0x003B;              // SPI2 mode = 1, SCK freq = 8 MHz
     SPI2CON2 = 0;
     SPI2STAT = 0x8000;
+    D5_DIR = OUT;
+    D5 = 0;
+    D6_DIR = OUT;
+    D6 = 0;
+    D7_DIR = OUT;
+    D7 = 0;
 
     USB_setup_vendor_callback = vendor_requests;
     init_usb();
@@ -183,4 +207,3 @@ int16_t main(void) {
 #endif
     }
 }
-
