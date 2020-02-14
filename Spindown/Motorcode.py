@@ -33,7 +33,6 @@ class Motor:
             anglelist.append(angle_degrees);
             anglelist2 = np.unwrap(anglelist, 360);
 
-
         #print(list);
         #print(anglelist);
         plt.plot(list, anglelist);
