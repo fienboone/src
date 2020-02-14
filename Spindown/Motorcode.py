@@ -2,8 +2,11 @@
 import Spindown
 import time
 import matplotlib.pyplot as plt
+import numpy as np
+import math
 
 class Motor:
+
 
     def __init__(self):
         self.dev = Spindown.Spindown();
@@ -19,17 +22,17 @@ class Motor:
         anglelist = [];
         a = time.time();
 
-        while x < 10000:
+        while x < 5000:
             x += 1;
             b = time.time();
             y = b-a;
-            y_rounded = round(y,2);
-            list.append(y_rounded);
+            list.append(y);
 
             angle = self.dev.get_angle();
             angle_degrees = (angle/43.9);
-            angle_degrees_rounded = round(angle_degrees, 2);
-            anglelist.append(angle_degrees_rounded);
+            anglelist.append(angle_degrees);
+            anglelist2 = np.unwrap(anglelist, 360);
+
 
         #print(list);
         #print(anglelist);
@@ -37,4 +40,9 @@ class Motor:
         plt.title('Angle vs Time')
         plt.xlabel('Time (s)')
         plt.ylabel('Angle(degrees)')
+        plt.show();
+        plt.plot(list, anglelist2);
+        plt.title('Absolute angle vs Time')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Absolute angle (degrees)')
         plt.show();
