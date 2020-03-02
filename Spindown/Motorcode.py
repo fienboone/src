@@ -12,6 +12,8 @@ class Motor:
         self.dev = Spindown.Spindown();
 
     def spinmotor(self):
+        angle = self.dev.get_angle();
+        print(angle);
         self.dev.toggle_d5_pwm();
         self.dev.toggle_d6_dir();
         time.sleep(5);
@@ -33,8 +35,8 @@ class Motor:
             anglelist.append(angle_degrees);
             anglelist2 = np.unwrap(anglelist, 360);
 
-        #print(list);
-        #print(anglelist);
+        print(list);
+        print(anglelist);
         plt.plot(list, anglelist);
         plt.title('Angle vs Time')
         plt.xlabel('Time (s)')

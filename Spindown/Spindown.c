@@ -186,6 +186,7 @@ int16_t main(void) {
     SPI2CON1 = 0x003B;              // SPI2 mode = 1, SCK freq = 8 MHz
     SPI2CON2 = 0;
     SPI2STAT = 0x8000;
+    
     D5_DIR = OUT;
     D5 = 0;
     D6_DIR = OUT;
